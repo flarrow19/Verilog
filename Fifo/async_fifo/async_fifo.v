@@ -48,6 +48,7 @@ always @(posedge wr_clk_i)begin
                 fifo[wr_ptr] <=  wdata_i;
                 if (wr_ptr == DEPTH-1)wr_toggle_f <= ~ wr_toggle_f;
                  wr_ptr <= (wr_ptr == DEPTH - 1) ? 0 : wr_ptr + 1;
+                wr_ptr_gray <= {wr_ptr[3], wr_ptr[3:1]^wr_ptr[2:0]}; //Gray code conversion to avoid glitches
             end
         end
     end
@@ -65,6 +66,7 @@ always @(posedge rd_clk_i)begin
                 rdata_o <= fifo[rd_ptr];
                 if(rd_ptr == DEPTH-1) rd_toggle_f <= ~ rd_toggle_f;
                 rd_ptr <= (rd_ptr == DEPTH-1) ? 0 : rd_ptr + 1;
+                rd_ptr_gray <= {rd_ptr[3], rd_ptr[3:1]^rd_ptr[2:0] };
             end
         end
     end
@@ -73,18 +75,18 @@ end
 // Synchronisation (1 stage both ways)
 // wrt ot wr_clk
 always @(posedge wr_clk_i)begin
-    rd_ptr_wr_clk <= rd_ptr;
+    rd_ptr_gray_wr_clk <= rd_ptr;
     rd_toggle_f_wr_clk <= rd_toggle_f;
 end
 //wrt read clk
 always @(posedge rd_clk_i)begin
-    wr_ptr_rd_clk <= wr_ptr;
+    wr_ptr_gray_rd_clk <= wr_ptr;
     wr_toggle_f_rd_clk <= wr_toggle_f;
 end
 
 // Empty Full condition
 always @(*)begin
-    empty_o = (wr_ptr_rd_clk == rd_ptr) && (wr_toggle_f_rd_clk == rd_toggle_f);
-    full_o = (rd_ptr_wr_clk == wr_ptr) && (rd_toggle_f_wr_clk != wr_toggle_f);
+    empty_o = (wr_ptr_gray_rd_clk == rd_ptr_gray) && (wr_toggle_f_rd_clk == rd_toggle_f);
+    full_o = (rd_ptr_gray_wr_clk == wr_ptr_gray) && (rd_toggle_f_wr_clk != wr_toggle_f);
 end
 endmodule
