@@ -1,0 +1,7 @@
+vlib work
+vlog -work work async_fifo.v
+vlog -work work async_fifo_tb.v
+vopt -work work async_fifo_tb -o async_fifo_tb_opt +acc
+vsim -c -lib work async_fifo_tb_opt +testname=test_full 
+add wave -recursive sim:/async_fifo_tb_opt/dut/*
+run -all
