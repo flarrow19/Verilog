@@ -7,7 +7,8 @@ reg [WIDTH-1:0]wdata_i;
 wire  [WIDTH-1:0]rdata_o;
 wire  empty_o, full_o, wr_error_o, rd_error_o;
 integer i;
-
+integer wr_delay, rd_delay;
+    
 reg [30*8: 1] testname;
 async_fifo dut(
     wr_clk_i, rd_clk_i, rst_i, wdata_i, full_o, wr_en_i, wr_error_o,
@@ -53,8 +54,26 @@ initial begin
             read_fifo(DEPTH+1);
         end
         "test_concurrent_wr_rd": begin
+            fork
+            begin
+            for(i=1; i<500; i=i+1)begin
+                write_fifo(1);
+                wr_delay = $urandom_range(1, 10);
+                repeat(wr_delay) @(posedge wr_clk_i);
+            end
+            end
+            begin
+            for(i=1; i<500; i=i+1)begin
+                read_fifo(1);
+                rd_delay = $urandom_range(1, 10);
+                repeat(rd_delay) @(posedge wr_clk_i);
+            end
+            end
+            join
         end
     endcase
+    #50;
+    $finish;
 end
 
 task write_fifo(input integer num_wr);
