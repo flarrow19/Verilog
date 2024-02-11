@@ -1,0 +1,4 @@
+vlib work
+vlog sync_fifo.v
+vlog sync_fifo_tb.v
+vsim work.sync_fifo_tb -voptargs=+acc
