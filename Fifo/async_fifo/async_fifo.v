@@ -11,7 +11,9 @@ output reg [WIDTH-1:0]rdata_o;
 output reg full_o, rd_error_o, wr_error_o, empty_o;
 
 reg [PTR_WIDTH-1:0]wr_ptr, rd_ptr;
+reg [PTR_WIDTH-1:0] wr_ptr_gray, rd_ptr_gray;
 reg [PTR_WIDTH-1:0]wr_ptr_rd_clk, rd_ptr_wr_clk;
+reg [PTR_WIDTH-1:0]wr_ptr_gray_rd_clk, rd_ptr_gray_wr_clk;
 reg wr_toggle_f, rd_toggle_f, wr_toggle_f_rd_clk, rd_toggle_f_wr_clk;
 
 reg [WIDTH-1:0]fifo[DEPTH-1:0];
