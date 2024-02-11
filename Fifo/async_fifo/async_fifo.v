@@ -31,8 +31,12 @@ always @(posedge wr_clk_i)begin
         rd_error_o <= 0;
         wr_ptr <= 0;
         rd_ptr <= 0;
+        wr_ptr_gray <= 0;
+        rd_ptr_gray <= 0;
         wr_ptr_rd_clk <= 0;
         rd_ptr_wr_clk <= 0;
+        wr_ptr_gray_rd_clk <= 0;
+        rd_ptr_gray_wr_clk <= 0;
         wr_toggle_f <= 0;
         rd_toggle_f <= 0;
         wr_toggle_f_rd_clk <= 0;
